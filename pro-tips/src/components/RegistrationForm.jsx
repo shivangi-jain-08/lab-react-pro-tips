@@ -1,27 +1,27 @@
+// src/components/RegistrationForm.jsx
 import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function RegistrationForm() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    contacts: "",
+    mobile: "",
   });
 
   const [validationErrors, setValidationErrors] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    contacts: "",
+    mobile: "",
   });
-
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const onFormChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
     setValidationErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    setRegistrationSuccess(false); 
   };
 
   const onFormSubmit = (e) => {
@@ -40,8 +40,8 @@ function RegistrationForm() {
       errors.email = "Please enter your email!";
     }
 
-    if (!form.contacts.trim()) {
-      errors.contacts = "Please enter your contacts!";
+    if (!form.mobile.trim() || form.mobile.length !== 10) {
+      errors.mobile = "Please enter a valid 10-digit mobile no.!";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -49,32 +49,23 @@ function RegistrationForm() {
       setValidationErrors(errors);
     } else {
       // If no errors, set success message and clear form
-      setRegistrationSuccess(true);
+      toast.success("Registration Successful!", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 5000, // 5 seconds
+      });
+
       setForm({
         firstName: "",
         lastName: "",
         email: "",
-        contacts: "",
+        mobile: "",
       });
-
-    
     }
   };
 
   return (
     <div>
-      {registrationSuccess && (
-        <div
-          style={{
-            backgroundColor: "#5cb85c",
-            color: "white",
-            padding: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          Registration Successful!
-        </div>
-      )}
+      <ToastContainer />
       <form onSubmit={onFormSubmit}>
         <label>
           First Name:
@@ -110,14 +101,15 @@ function RegistrationForm() {
         </label>
         <br />
         <label>
-          Contacts:
+          Mobile No.:
           <input
-            type="text"
-            name="contacts"
-            value={form.contacts}
+            type="number"
+            name="mobile"
+            value={form.mobile}
             onChange={onFormChange}
+            placeholder="Enter 10-digit mobile number"
           />
-          <span className="error">{validationErrors.contacts}</span>
+          <span className="error">{validationErrors.mobile}</span>
         </label>
         <br />
         <button type="submit">Register</button>
